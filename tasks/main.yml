@@ -2,30 +2,32 @@
 # main.yml
 
 - name: Create a tempdir
-  file:
-    state: directory
-    path: "{{ dds_temp_path }}"   
+  command: mktemp ansible.xxxxxx
+  register: mktempout
 
-- name: Remove passphrase file, if it exists
-  file:
-    state: absent
-    path: "{{ dds_passphrase_file }}" 
+- name: Set tmp_pathname
+  set_fact:
+    tmp_pathname: "{{ mktempout.stdout }}"
+    tmp_passphrase: "{{ mktempout.stdout }}/passphrase.txt"
 
 - name: Create passphrase file
   file:
     state: touch
-    path: "{{ dds_passphrase_file }}" 
+    path: "{{ tmp_passphrase }}"
 
 - name: Add passphrase to the file
   lineinfile:
-    dest: "{{ dds_passphrase_file }}"
-    line: "{{ dds_passphrase }}" 
+    dest: "{{ tmp_passphrase }}"
+    line: "{{ adb_passphrase }}" 
 
 - name: Generate ca-key.pem
-  command: "openssl genrsa -aes256 -passout file:{{ dds_passphrase_file }} -out {{ dds_temp_path }}/ca-key.pem 4096"
+  command: "openssl genrsa -aes256 -passout file:{{ tmp_passphrase }} -out {{ tmp_pathname }}/ca-key.pem 4096"
 
 - name: Generate ca certificate   
-  command: "openssl req -new -x509 -days 365 -key {{ dds_temp_path }}/ca-key.pem -sha256 -out {{ dds_temp_path }}/ca.pem -passin file:{{ dds_passphrase_file }} -subj '/C={{ dds_country }}/ST={{dds_state }}>/L={{ dds_locality }}/O={{ dds_organization }}/CN={{ dds_common_name }}'"
+  command: >
+      openssl req -new -x509 -days 365 -key {{ tmp_pathname }}/ca-key.pem 
+      -sha256 -out {{ tmp_pathname }}/ca.pem -passin file:{{ tmp_passphrase }} 
+      -subj '/C={{ adb_country }}/ST={{ adb_state }}>/L={{ adb_locality }}/O={{ adb_organization }}/CN={{ adb_hostname }}'"
 
 - include: generate_server_certs.yml
 - include: generate_client_certs.yml
@@ -33,17 +35,10 @@
 - name: Remove the temp directory
   file:
     state: absent
-    path: "{{ dds_temp_path }}"
-
-- name: Install shell script for setting DOCKER env vars
-  template:
-    src: "{{ role_path }}/templates/docker_env.j2"
-    dest: "{{ dds_env_shell_path }}/docker_env.sh"
-    mode: 0755
-  when: dds_install_shell
+    path: "{{ tmp_pathname }}"
 
 - name: Restart the docker daemon 
   service:
     name: docker
     state: restarted  
-  when: dds_restart_docker
+  when: adb_restart_docker

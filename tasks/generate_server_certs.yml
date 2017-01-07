@@ -1,46 +1,46 @@
 # generate_server_certs.yml 
 
 - name: Create server key
-  command: openssl genrsa -out {{ dds_temp_path }}/server-key.pem 4096
+  command: openssl genrsa -out {{ tmp_pathname }}/server-key.pem 4096
 
 - name: Create the server CSR 
-  command: "openssl req -subj '/CN={{ dds_host }}' -sha256 -new -key {{ dds_temp_path }}/server-key.pem -out {{ dds_temp_path }}/server.csr"
+  command: "openssl req -subj '/CN={{ adb_hostname }}' -sha256 -new -key {{ tmp_pathname }}/server-key.pem -out {{ tmp_pathname }}/server.csr"
 
-- name: Remove extfile
-  file:
-    state: absent
-    path: "{{ dds_extfile }}" 
+- name: Define server_extfile
+  set_fact:
+    server_extfile: "{{ tmp_pathname }}/server_extfile"
 
 - name: Create extfile
   file:
     state: touch 
-    path: "{{ dds_extfile }}" 
+    path: "{{ server_extfile }}" 
 
 - name: Add alt name to extfile
   lineinfile:
-    dest: "{{ dds_extfile }}" 
-    line: "subjectAltName = IP:{{ dds_host }},IP:127.0.0.1"
+    dest: "{{ server_extfile }}" 
+    line: "subjectAltName = DNS:{{ adb_hostname }},IP:{{ adb_ip_address }},IP:127.0.0.1"
 
 - name: Create the server certificate 
-  command: "openssl x509 -req -days 365 -sha256 -in {{ dds_temp_path }}/server.csr -CA {{ dds_temp_path }}/ca.pem -CAkey {{ dds_temp_path }}/ca-key.pem -CAcreateserial -out {{ dds_temp_path}}/server-cert.pem -extfile {{ dds_temp_path}}/extfile.cnf -passin file:{{ dds_passphrase_file }}"
+  command: >
+     openssl x509 -req -days 365 -sha256 -in {{ tmp_pathname }}/server.csr -CA {{ tmp_pathname }}/ca.pem 
+     -CAkey {{ tmp_pathname }}/ca-key.pem -CAcreateserial -out {{ tmp_pathname }}/server-cert.pem 
+     -extfile {{ server_extfile }} -passin file:{{ tmp_passphrase }}"
 
 - name: Check that the server cert path exists
   file:
     state: directory
-    path: "{{ dds_server_cert_path }}"
+    path: "{{ adb_server_certpath }}"
 
 - name: Copy server certs
-  command: cp "{{ dds_temp_path }}/{{ item }}" "{{ dds_server_cert_path }}/."
+  copy:
+    src: "{{ tmp_pathname }}/{{ item }}"
+    dest: "{{ adb_server_certpath }}/{{ item }}"
+    owner: root
+    group: root
+    mode: 0400
+    remote_src: yes
   with_items:
     - ca.pem
     - server-cert.pem
     - server-key.pem
 
-- name: Set file permissions 
-  file:
-    path: "{{ dds_server_cert_path }}/{{ item }}"
-    mode: 0400
-  with_items:
-    - ca.pem
-    - server-cert.pem
-    - server-key.pem
