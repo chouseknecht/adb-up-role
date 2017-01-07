@@ -1,0 +1,16 @@
+- name: Configure ADB
+  hosts: openshift.adb
+  gather_facts: yes
+  roles:
+    - role: chouseknecht.configure-adb 
+      adb_server_certpath: /etc/docker
+      adb_client_certpath: ./.vagrant/machines/default/virtualbox/docker
+      adb_hostname: openshift.adb
+      adb_ip_address: 
+      adb_passphrase: opensesame
+      adb_country: US
+      adb_state: North Carolina
+      adb_locality: Durham
+      adb_organization: Acme Corp
+      adb_restart_docker: yes
+   

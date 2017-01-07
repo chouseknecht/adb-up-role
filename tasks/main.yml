@@ -1,44 +1,15 @@
----
-# main.yml
+- name: Install vagrant plugins 
+  command: vagrant plugin install vagrant-service-manager vagrant-sshfs landrush
 
-- name: Create a tempdir
-  command: mktemp ansible.xxxxxx
-  register: mktempout
+- name: Download the OpenShift Vagrant file
+  get_url: 
+    url: https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile
+    dest: "{{ playbook_dir }}/Vagrantfile"
 
-- name: Set tmp_pathname
-  set_fact:
-    tmp_pathname: "{{ mktempout.stdout }}"
-    tmp_passphrase: "{{ mktempout.stdout }}/passphrase.txt"
+- name: Start the Vagrant host
+  shell: vagrant up 2>&1 | tee {{ playbook_dir }}/vagrant_up.out 
+  register: vagrantout
 
-- name: Create passphrase file
-  file:
-    state: touch
-    path: "{{ tmp_passphrase }}"
-
-- name: Add passphrase to the file
-  lineinfile:
-    dest: "{{ tmp_passphrase }}"
-    line: "{{ adb_passphrase }}" 
-
-- name: Generate ca-key.pem
-  command: "openssl genrsa -aes256 -passout file:{{ tmp_passphrase }} -out {{ tmp_pathname }}/ca-key.pem 4096"
-
-- name: Generate ca certificate   
-  command: >
-      openssl req -new -x509 -days 365 -key {{ tmp_pathname }}/ca-key.pem 
-      -sha256 -out {{ tmp_pathname }}/ca.pem -passin file:{{ tmp_passphrase }} 
-      -subj '/C={{ adb_country }}/ST={{ adb_state }}>/L={{ adb_locality }}/O={{ adb_organization }}/CN={{ adb_hostname }}'"
-
-- include: generate_server_certs.yml
-- include: generate_client_certs.yml
-
-- name: Remove the temp directory
-  file:
-    state: absent
-    path: "{{ tmp_pathname }}"
-
-- name: Restart the docker daemon 
-  service:
-    name: docker
-    state: restarted  
-  when: adb_restart_docker
+- name: Show output
+  debug:
+    var: vagrantout
