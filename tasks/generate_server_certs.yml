@@ -43,4 +43,5 @@
     - ca.pem
     - server-cert.pem
     - server-key.pem
-
+  become: yes
+  become_user: root

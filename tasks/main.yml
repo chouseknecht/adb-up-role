@@ -13,3 +13,24 @@
 - name: Show output
   debug:
     var: vagrantout
+
+- name: Get the new IP
+  shell: grep "adding machine entry" {{ playbook_dir }}/vagrant_up.out | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' 
+  register: ipout
+  
+- name: Update /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: 'openshift\.adb'
+    line: "{{ ipout.stdout }}  openshift.adb"
+  become: yes
+  become_user: root  
+
+- name: Add VM to inventory
+  add_host:
+    name: openshift.adb 
+    ansible_private_key_file: "{{ playbook_dir }}/.vagrant/machines/default/virtualbox/private_key
+    ansible_user: vagrant
+
+- include: create_certs.yml
+  when: inventory_hostname == 'openshift.adb'
