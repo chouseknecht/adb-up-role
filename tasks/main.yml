@@ -29,7 +29,7 @@
 - name: Add VM to inventory
   add_host:
     name: openshift.adb 
-    ansible_private_key_file: "{{ playbook_dir }}/.vagrant/machines/default/virtualbox/private_key
+    ansible_private_key_file: "{{ playbook_dir }}/.vagrant/machines/default/virtualbox/private_key"
     ansible_user: vagrant
 
 - include: create_certs.yml

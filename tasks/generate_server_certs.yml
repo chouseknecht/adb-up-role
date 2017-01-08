@@ -24,7 +24,7 @@
   command: >
      openssl x509 -req -days 365 -sha256 -in {{ tmp_pathname }}/server.csr -CA {{ tmp_pathname }}/ca.pem 
      -CAkey {{ tmp_pathname }}/ca-key.pem -CAcreateserial -out {{ tmp_pathname }}/server-cert.pem 
-     -extfile {{ server_extfile }} -passin file:{{ tmp_passphrase }}"
+     -extfile {{ server_extfile }} -passin file:{{ tmp_passphrase }}
 
 - name: Check that the server cert path exists
   file:

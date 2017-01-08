@@ -27,7 +27,7 @@
   command: >
       openssl req -new -x509 -days 365 -key {{ tmp_pathname }}/ca-key.pem 
       -sha256 -out {{ tmp_pathname }}/ca.pem -passin file:{{ tmp_passphrase }} 
-      -subj '/C={{ adb_country }}/ST={{ adb_state }}>/L={{ adb_locality }}/O={{ adb_organization }}/CN={{ adb_hostname }}'"
+      -subj '/C={{ adb_country }}/ST={{ adb_state }}>/L={{ adb_locality }}/O={{ adb_organization }}/CN={{ adb_hostname }}'
 
 - include: generate_server_certs.yml
 - include: generate_client_certs.yml

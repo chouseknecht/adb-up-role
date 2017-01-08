@@ -23,7 +23,8 @@
 - name: Create the client certificate 
   command: >
       openssl x509 -req -days 365 -sha256 -in {{ tmp_pathname }}/client.csr -CA {{ tmp_pathname }}/ca.pem 
-      -CAkey {{ tmp_pathname }}/ca-key.pem -CAcreateserial -out {{ tmp_pathname }}/cert.pem -extfile {{ tmp_extfile }} -passin file:{{ tmp_passphrase }}"
+      -CAkey {{ tmp_pathname }}/ca-key.pem -CAcreateserial -out {{ tmp_pathname }}/cert.pem 
+      -extfile {{ tmp_extfile }} -passin file:{{ tmp_passphrase }}
 
 - name: Copy client certificates from VM to host
   synchronize: 
