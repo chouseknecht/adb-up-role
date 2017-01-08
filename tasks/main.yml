@@ -8,3 +8,4 @@
 - name: Show output
   debug:
     var: vagrantout
+  when: inventory_hostname == 'localhost'
