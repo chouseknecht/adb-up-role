@@ -1,5 +1,5 @@
 - name: Check for existing VM
-  include: is_running.yml
+  include: isrunning.yml
 
 - name: Destroy VM
   command: vagrant destroy -f
