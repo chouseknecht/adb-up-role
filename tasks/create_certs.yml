@@ -2,7 +2,7 @@
 # main.yml
 
 - name: Create a tempdir
-  command: mktemp ansible.xxxxxx
+  command: mktemp ansible.XXXXXXXXXX 
   register: mktempout
 
 - name: Set tmp_pathname
