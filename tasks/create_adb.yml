@@ -1,0 +1,43 @@
+# create_adb.yml
+
+- name: Check for existing VM
+  include: isrunning.yml
+
+- name: Destroy VM
+  command: vagrant destroy -f
+  when: vm_exists and adb_force_create
+
+- name: Stop, if VM exists
+  assert:
+    msg: A VM already exists. Remove it or set adb_force_create.
+    that: not vm_exists or adb_force_create
+
+- name: Install vagrant plugins
+  command: vagrant plugin install vagrant-service-manager vagrant-sshfs landrush
+
+- name: Download the OpenShift Vagrant file
+  get_url:
+    url: https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile
+    dest: "{{ playbook_dir }}/Vagrantfile"
+
+- name: Start the Vagrant host
+  shell: vagrant up 2>&1 | tee {{ playbook_dir }}/vagrant_up.out
+  register: vagrantout
+
+- name: Get the new IP
+  shell: grep "adding machine entry" {{ playbook_dir }}/vagrant_up.out | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}'
+  register: ipout
+
+- name: Update /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: 'openshift\.adb'
+    line: "{{ ipout.stdout }}  openshift.adb"
+  become: yes
+  become_user: root
+
+- name: Add VM to inventory
+  add_host:
+    name: openshift.adb
+    ansible_private_key_file: "{{ playbook_dir }}/.vagrant/machines/default/virtualbox/private_key"
+    ansible_user: vagrant
