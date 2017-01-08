@@ -1,0 +1,15 @@
+# isrunning.yml
+
+- name: Check existing vagrant status
+  command: vagrant status
+  register: statusout
+
+- name: Set status
+  set_fact:
+    vm_exists: false
+
+- name: Set status
+  set_fact:
+    vm_exists: true
+  when: "'running' in statusout.stdout or 'power off' in statusout.stdout"
+
