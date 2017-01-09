@@ -30,9 +30,13 @@ Before you can use this role, you need to have the following installed:
 - Virtualbox 5.0.26+
 - Vagrant 1.9.1+
 
+You will also need *sudo* access to your local machine in order to install the *oc* client, and update */etc/hosts*.  
+
 ## Example
 
-The best way to use this role is to create a new project directory, and then copy and run the playbook, [adb-up.yml](./files/adb-up.yml), included with the role:
+The best way to use this role is to create a new project directory, and then copy and run the playbook, [adb-up.yml](./files/adb-up.yml), included with the role. The following, example demonstrates this:
+
+**NOTE**: When running the playbook, be sure to include the *--ask-sudo-pass* option. The below example reference the environment variable *ANSIBLE_ROLES_PATH*. You can also set this path using an *ansible.cfg* file. View [Ansible roles_path](http://docs.ansible.com/ansible/intro_configuration.html#roles-path), for more information.
 
 ```
 # Install the role to your ANSIBLE_ROLES_PATH
@@ -48,7 +52,7 @@ $ cd adb
 $ cp $ANSIBLE_ROLES_PATH/chouseknecht.adb-up/files/adb-up.yml . 
 
 # Run the playbook
-$ ansible-playbook adb-up.yml
+$ ansible-playbook adb-up.yml --ask-sudo-pass
 ```
 
 ## Role Variables

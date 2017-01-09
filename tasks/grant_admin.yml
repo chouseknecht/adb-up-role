@@ -1,0 +1,13 @@
+# grant_admin.yml
+
+- name: Login as admin
+  command: oc login https://openshift.adb:8443 -u admin -p admin
+
+- name: Grant cluster-admin to developer
+  command: oc adm policy add-cluster-role-to-user cluster-admin openshift-dev
+
+- name: Log in as developer
+  command: oc login -u openshift-dev -p devel 
+
+- name: Set the namespace to 'default'
+  command: oc project default

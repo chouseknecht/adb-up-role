@@ -1,9 +1,13 @@
 - name: Install oc client
-  include: intall_client.yml 
+  include: install_client.yml 
   when: inventory_hostname == 'localhost'
 
 - name: Create the ADB virtual machine
   include: create_adb.yml
+  when: inventory_hostname == 'localhost'
+
+- name: Grant admin to openshift-dev
+  include: grant_admin.yml
   when: inventory_hostname == 'localhost'
  
 - include: create_certs.yml
