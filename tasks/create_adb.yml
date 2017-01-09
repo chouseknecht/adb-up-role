@@ -43,6 +43,11 @@
   become: yes
   become_user: root
 
+- name: Create the local certficate directory
+  file:
+    path: "{{ playbook_dir }}/.vagrant/machines/default/virtualbox/docker"
+    state: directory
+
 - name: Add the new VM to inventory
   add_host:
     hostname: openshift.adb
