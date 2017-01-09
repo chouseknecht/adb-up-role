@@ -22,8 +22,7 @@ Before you can use this role, you need to have the following installed:
 
 ## Known issues
 
-Ruby gem error
---------------
+### Ruby gem error
 
 If you're running on OSX, you'll likely see the following message:
 
@@ -33,8 +32,7 @@ Ignoring eventmachine-1.0.9.1 because its extensions are not built.  Try: gem pr
 
 This seems to be coming from the [Landrush](https://github.com/vagrant-landrush/landrush) plugin. See issue [#292](https://github.com/vagrant-landrush/landrush/issues/292). And, it seems safe to ignore. The VM runs fine, and `vagrant` commands work.
 
-Using service-manager to set the envirionment
----------------------------------------------
+### Using service-manager to set the envirionment
 
 If you read the ADB documentation, you'll see references to the command `vagrant service-manager env`. In general, don't use this command. It generates new certificates when you run it, and the certificates will not be bound to the *openshit.adb* host. They're bound to *example.com*, which works fine for the `docker` command, but breaks Ansible Container. 
 
