@@ -9,3 +9,4 @@ adb_locality: Durham
 adb_organization: Acme Corp
 adb_restart_docker: yes
 adb_force_create: yes
+adb_openshift_version: v1.3.2

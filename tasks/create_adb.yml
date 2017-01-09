@@ -20,6 +20,12 @@
     url: https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile
     dest: "{{ playbook_dir }}/Vagrantfile"
 
+- name: Update the OpenShift version
+  lineinfile:
+    dest: "{{ playbook_dir }}/Vagrantfile"
+    regexp: '^IMAGE\_TAG='
+    line: 'IMAGE_TAG="{{ adb_openshift_version }}"'
+
 - name: Start the Vagrant host
   shell: vagrant up 2>&1 | tee {{ playbook_dir }}/vagrant_up.out
   register: vagrantout
