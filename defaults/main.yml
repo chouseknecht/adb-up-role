@@ -2,7 +2,6 @@
 adb_server_certpath: /etc/docker
 adb_client_certpath: ./.vagrant/machines/default/virtualbox/docker
 adb_hostname: openshift.adb
-adb_ip_address: 
 adb_passphrase: opensesame
 adb_country: US
 adb_state: North Carolina
