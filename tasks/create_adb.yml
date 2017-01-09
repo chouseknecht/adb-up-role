@@ -19,6 +19,7 @@
   get_url:
     url: https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile
     dest: "{{ playbook_dir }}/Vagrantfile"
+    force: yes
 
 - name: Update the OpenShift version
   lineinfile:
