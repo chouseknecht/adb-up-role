@@ -49,7 +49,7 @@
     state: directory
 
 - name: Get the Docker Server API Version
-  shell: "{% raw %}vagrant ssh -c 'docker version --format "{{ json . }}"' 2>/dev/null{% endraw %}"
+  shell: {% raw %}vagrant ssh -c 'docker version --format "{{ json . }}"' 2>/dev/null{% endraw %}
   register: version_output
 
 - name: Set docker_version
