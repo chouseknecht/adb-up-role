@@ -3,7 +3,7 @@
   connection: local
   gather_facts: no
   roles:
-    - role: configure-adb-role 
+    - role: chouseknecht.adb-up-role 
       adb_server_certpath: /etc/docker
       adb_client_certpath: ./.vagrant/machines/default/virtualbox/docker
       adb_hostname: openshift.adb
@@ -19,7 +19,7 @@
   hosts: openshift.adb
   gather_facts: no
   roles:
-    - role: configure-adb-role 
+    - role: chouseknecht.adb-up-role 
       adb_server_certpath: /etc/docker
       adb_client_certpath: ./.vagrant/machines/default/virtualbox/docker
       adb_hostname: openshift.adb
