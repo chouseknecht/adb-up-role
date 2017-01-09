@@ -42,3 +42,5 @@
     name: docker
     state: restarted  
   when: adb_restart_docker
+  become: yes
+  become_user: root
