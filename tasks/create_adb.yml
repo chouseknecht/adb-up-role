@@ -52,9 +52,11 @@
   shell: "{% raw %}vagrant ssh -c 'docker version --format \"{{ json . }}\"' 2>/dev/null{% endraw %}"
   register: version_output
 
+- debug: var=version_output.stdout
+
 - name: Set docker_version
   set_fact:
-    docker_version: "{{ version_output | from_json }}"
+    docker_version: "{{ version_output.stdout | from_json }}"
 
 - name: Create setenv.sh
   template:
