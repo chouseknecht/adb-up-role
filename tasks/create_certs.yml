@@ -44,3 +44,15 @@
   when: adb_restart_docker
   become: yes
   become_user: root
+
+- name: Wait 5 seconds
+  wait_for: 
+    timeout: 5
+
+- name: Restart OpenShift
+  service:
+    name: openshift.service
+    state: restarted
+  when: adb_restart_docker
+  become: yes
+  become_user: root

@@ -1,9 +1,13 @@
 # grant_admin.yml
 
-- name: Login as admin
-  command: oc login https://openshift.adb:8443 -u admin -p admin
+- name: Wait 5 seconds
+  wait_for:
+    timeout: 5
 
-- name: Grant cluster-admin to developer
+- name: Login as admin
+  command: oc login --insecure-skip-tls-verify=true https://openshift.adb:8443 -u admin -p admin
+
+- name: Grant cluster-admin to openshift-dev 
   command: oc adm policy add-cluster-role-to-user cluster-admin openshift-dev
 
 - name: Log in as developer

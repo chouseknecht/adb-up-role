@@ -13,7 +13,12 @@
 - include: create_certs.yml
   when: inventory_hostname == 'openshift.adb'
 
+- name: Get output
+  command: "cat {{ playbook_dir }}/vagrant_up.out"
+  register: vagrantout 
+  when: inventory_hostname == 'openshift.adb'
+
 - name: Show output
   debug:
-    var: vagrantout
+    var: vagrantout.stdout
   when: inventory_hostname == 'openshift.adb'
