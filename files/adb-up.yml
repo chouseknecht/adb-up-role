@@ -1,0 +1,32 @@
+- name: Create ADB virtual machine
+  hosts: localhost 
+  connection: local
+  gather_facts: no
+  roles:
+    - role: configure-adb-role 
+      adb_server_certpath: /etc/docker
+      adb_client_certpath: ./.vagrant/machines/default/virtualbox/docker
+      adb_hostname: openshift.adb
+      adb_ip_address: 
+      adb_passphrase: opensesame
+      adb_country: US
+      adb_state: North Carolina
+      adb_locality: Durham
+      adb_organization: Acme Corp
+      adb_restart_docker: yes
+
+- name: Configure openshift.adb
+  hosts: openshift.adb
+  gather_facts: no
+  roles:
+    - role: configure-adb-role 
+      adb_server_certpath: /etc/docker
+      adb_client_certpath: ./.vagrant/machines/default/virtualbox/docker
+      adb_hostname: openshift.adb
+      adb_ip_address: 
+      adb_passphrase: opensesame
+      adb_country: US
+      adb_state: North Carolina
+      adb_locality: Durham
+      adb_organization: Acme Corp
+      adb_restart_docker: yes
