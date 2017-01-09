@@ -13,7 +13,7 @@
 - name: Create extfile
   file:
     state: touch
-    path: "{{ tmp_pextfile }}"
+    path: "{{ tmp_extfile }}"
 
 - name: Add extendedKeyUsage to extfile
   lineinfile:
