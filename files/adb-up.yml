@@ -1,7 +1,7 @@
 - name: Create ADB virtual machine
   hosts: localhost 
   connection: local
-  gather_facts: no
+  gather_facts: yes
   roles:
     - role: chouseknecht.adb-up-role 
       adb_server_certpath: /etc/docker
