@@ -1,3 +1,7 @@
+- name: Install oc client
+  include: intall_client.yml 
+  when: inventory_hostname == 'localhost'
+
 - name: Create the ADB virtual machine
   include: create_adb.yml
   when: inventory_hostname == 'localhost'
@@ -8,4 +12,4 @@
 - name: Show output
   debug:
     var: vagrantout
-  when: inventory_hostname == 'localhost'
+  when: inventory_hostname == 'openshift.adb'

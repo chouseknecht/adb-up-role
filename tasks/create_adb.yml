@@ -48,6 +48,20 @@
     path: "{{ playbook_dir }}/.vagrant/machines/default/virtualbox/docker"
     state: directory
 
+- name: Get the Docker Server API Version
+  command: vagrant ssh docker version --format "{{ json . }}"
+  register: version_output
+
+- name: Set docker_version
+  set_fact:
+    docker_version: "{{ version_output | from_json }}"
+
+- name: Create setenv.sh
+  template:
+    src: setenv.sh.j2
+    dest: "{{ playbook_dir }}/setenv.sh"
+    mode: 0775
+
 - name: Add the new VM to inventory
   add_host:
     hostname: openshift.adb

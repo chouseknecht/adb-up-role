@@ -1,0 +1,11 @@
+- name: Check if oc binary exists
+  stat:
+    path: "{{ openshift_client_dest }}/oc"
+  register: oc_client
+
+- name: Get oc assets
+  include: get_oc_assets.yml
+
+- name: Install the oc client
+  include: install_oc.yml
+  when: not oc_client.stat.exists or openshift_force_client_install

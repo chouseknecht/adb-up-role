@@ -10,3 +10,8 @@ adb_organization: Acme Corp
 adb_restart_docker: yes
 adb_force_create: yes
 adb_openshift_version: v1.3.2
+adb_github_url: https://api.github.com/repos
+
+openshift_repo: openshift/origin
+openshift_client_dest: /usr/local/bin
+openshift_force_client_install: yes

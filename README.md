@@ -1,4 +1,3 @@
-
 # adb-up-role
 
 Create an [Atomic Developer Bundle (ADB)](https://github.com/projectatomic/adb-atomic-developer-bundle) virtual machine configured to work with [Ansible Container](https://github.com/ansible/ansible-container).
@@ -13,6 +12,16 @@ Performs the following tasks:
 - Restarts the Docker daemon on the VM
 - Creates *setenv.sh*, a script you can source to configure your shell environment to use the Docker daemon running inside the new VM
 
+As described in the Example section below, use this role by running the included playbook, [adb-up.yml](./files/adb-up.yml). 
+
+## Using the virtual machine 
+
+After the role executes, you will have a new VM running OpenShift and a Docker daemon. The best way to use this with Ansible Container is to source the script *setenv.sh* to point your shell environment to the Docker daemon running on the VM.
+
+Next, run `ansible-container build` to create your project images. The new images will be local to the Docker daemon running in the VM. Then create the role to deploy the application by running `ansible-container shipit openshift --local-images`, and then run the playbook. 
+
+...
+
 ## Prerequisites
 
 Before you can use this role, you need to have the following installed:
@@ -23,7 +32,7 @@ Before you can use this role, you need to have the following installed:
 
 ## Example
 
-The best way to use this role is to create a new project directory, and the copy and run the [adb-up.yml playbook](./files/adb-up.yml) included with the role:
+The best way to use this role is to create a new project directory, and then copy and run the playbook, [adb-up.yml](./files/adb-up.yml), included with the role:
 
 ```
 # Install the role to your ANSIBLE_ROLES_PATH
@@ -50,7 +59,7 @@ $ ansible-playbook adb-up.yml
 
 ### Ruby gem error
 
-If you're running on OSX, you'll likely see the following message:
+If you're running on OSX (and possibly other platforms), you'll see the following message:
 
 ```
 Ignoring eventmachine-1.0.9.1 because its extensions are not built.  Try: gem pristine eventmachine --version 1.0.9.1
@@ -66,5 +75,8 @@ Rather than using service-manager, use the command `source setenv.sh`. This will
 
 ## License
 
+[Apache v2](./LICENSE)
 
 ## Author
+
+[@chouseknecht](https://github.com/chouseknecht)
