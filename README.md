@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/chouseknecht/adb-up-role.svg?branch=master)](https://travis-ci.org/chouseknecht/adb-up-role)
+
 # adb-up-role
 
 Create an [Atomic Developer Bundle (ADB)](https://github.com/projectatomic/adb-atomic-developer-bundle) virtual machine configured to work with [Ansible Container](https://github.com/ansible/ansible-container).
