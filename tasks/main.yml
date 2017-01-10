@@ -20,5 +20,5 @@
 
 - name: Show output
   debug:
-    var: vagrantout.stdout
+    var: vagrantout.stdout_lines
   when: inventory_hostname == 'openshift.adb'
