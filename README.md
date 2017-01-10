@@ -106,9 +106,14 @@ $ cd ansible
 # Run the shipit playbook
 $ ansible-playbook shipit-openshift.yml
 ```
-A couple notes:
 
-- The *--no-selinux* option is new in v0.3.0. It stops the additon of the 'Z' option to volumes automatically attached to the build container. In this case, we need itto not include it on the project directory, which gets mounted as /ansible-container. 
+Click the following image to wathc the Jenkins service being deployed on OpenShift:
+
+[![Deploying Jenkins](https://github.com/chouseknecht/adb-up-role/blob/images/images/jenkins-deployment.png)](https://youtu.be/FQY8hQ-cB1c)
+
+### A couple of notes:
+
+- The *--no-selinux* option is new in v0.3.0. It stops the additon of the 'Z' option to volumes automatically attached to the build container. In this case, it should not be included on the project directory, which gets mounted as */ansible-container*. 
 
 - The *--local-images* option used with `shipit` is new in v0.3.0 as well. It forces the use of images local to the Docker daemon, rather than pulling them from the engine's default source, which in this case would be Docker Hub. 
 
@@ -130,7 +135,7 @@ adb_country: US
 
 adb_state: North Carolina
 > State to use for certificate signing requests.
-
+ 
 adb_locality: Durham
 > Locality to use for certificate signing requests.
 
