@@ -4,7 +4,7 @@
 
 Create an [Atomic Developer Bundle (ADB)](https://github.com/projectatomic/adb-atomic-developer-bundle) virtual machine configured to work with [Ansible Container](https://github.com/ansible/ansible-container).
 
-Performs the following tasks:
+Specifically, it performs the following tasks:
 
 - Downloads the [OpenShift Vagrantfile](https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile), and updates it with the desired OpenShift version
 - Creates a new VM
@@ -64,6 +64,9 @@ $ cp $ANSIBLE_ROLES_PATH/chouseknecht.adb-up/files/adb-up.yml .
 # Run the playbook
 $ ansible-playbook adb-up.yml --ask-sudo-pass
 ```
+Click the following image to watch a video of the role being executed:
+
+[![Running the role](https://github.com/chouseknecht/adb-up-role/blob/images/images/adb_up_role.png)](https://youtu.be/8HFKxZSP5A8)
 
 ## Deploying your Ansible Container project 
 
