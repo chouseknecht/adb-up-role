@@ -107,7 +107,7 @@ $ cd ansible
 $ ansible-playbook shipit-openshift.yml
 ```
 
-Click the following image to wathc the Jenkins service being deployed on OpenShift:
+Click the following image to watch a video of the Jenkins service deployment:
 
 [![Deploying Jenkins](https://github.com/chouseknecht/adb-up-role/blob/images/images/jenkins-deployment.png)](https://youtu.be/FQY8hQ-cB1c)
 
