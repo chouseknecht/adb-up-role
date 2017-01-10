@@ -6,23 +6,26 @@ Create an [Atomic Developer Bundle (ADB)](https://github.com/projectatomic/adb-a
 
 Performs the following tasks:
 
-- Downloads the [OpenShift Vagrantfile](https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile), and sets the OpenShift version
+- Downloads the [OpenShift Vagrantfile](https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile), and updates it with the desired OpenShift version
 - Creates a new VM
 - Installs require Vagrant plugins
-- On the host machine adds an entry for *openshift.adb* to /etc/hosts, which points to the IP address assigned to the new VM
+- Downloads and installs the latest OpenShift client
+- On the host machine, adds an entry to */etc/hosts* for *openshift.adb*, and points it to the IP address of the new VM
 - Generates new client and server certificates for the Docker daemon running on the VM. Certificates are installed on the VM, and copied to the host. The new certs are created with *openshift.adb* as the server name, and the IP address as an alternate name.
 - Restarts the Docker daemon on the VM
-- Creates *setenv.sh*, a script you can source to configure your shell environment to use the Docker daemon running inside the new VM
+- Restarts the OpenShift cluster
+- On the host, creates *setenv.sh*, a script you can source to set your shell environment to use the Docker daemon running inside the new VM
+- Grants cluster admin access to the *openshift-dev* account
+- Logs into OpenShift as user *openshift-dev*, and set the project to *default* 
 
-As described in the Example section below, use this role by running the included playbook, [adb-up.yml](./files/adb-up.yml). 
+As described below in *Running the Role*, use this role by running the included playbook, [adb-up.yml](./files/adb-up.yml). 
 
-## Using the virtual machine 
+## Supported Platforms 
 
-After the role executes, you will have a new VM running OpenShift and a Docker daemon. The best way to use this with Ansible Container is to source the script *setenv.sh* to point your shell environment to the Docker daemon running on the VM.
+This role has been tested on the following platforms:
 
-Next, run `ansible-container build` to create your project images. The new images will be local to the Docker daemon running in the VM. Then create the role to deploy the application by running `ansible-container shipit openshift --local-images`, and then run the playbook. 
-
-...
+- OSX 
+- Fedora 25
 
 ## Prerequisites
 
@@ -34,21 +37,26 @@ Before you can use this role, you need to have the following installed:
 
 You will also need *sudo* access to your local machine in order to install the *oc* client, and update */etc/hosts*.  
 
-## Example
+If you want to deploy an Ansible Container project to the OpenShift cluster, you'll need Ansible Container 0.3.0. See [Installing from Source](http://docs.ansible.com/ansible-container/installation.html#running-from-source), if you need assistance.
 
-The best way to use this role is to create a new project directory, and then copy and run the playbook, [adb-up.yml](./files/adb-up.yml), included with the role. The following, example demonstrates this:
+## Running the Role
 
-**NOTE**: When running the playbook, be sure to include the *--ask-sudo-pass* option. The below example reference the environment variable *ANSIBLE_ROLES_PATH*. You can also set this path using an *ansible.cfg* file. View [Ansible roles_path](http://docs.ansible.com/ansible/intro_configuration.html#roles-path), for more information.
+The best way to use this role is to create a new project directory, and then copy and run the playbook, [adb-up.yml](./files/adb-up.yml), included with the role. The following, example demonstrates this.
+
+But first, a couple notes:
+
+- When running the playbook, be sure to include the *--ask-sudo-pass* option, and then provide your password at the prompt.
+- The following example uses the environment variable *ANSIBLE_ROLES_PATH*. You can also set this path using an *ansible.cfg* file. View [Ansible roles_path](http://docs.ansible.com/ansible/intro_configuration.html#roles-path), for more information.
 
 ```
 # Install the role to your ANSIBLE_ROLES_PATH
 $ ansible-galaxy install chouseknecht.adb-up
 
-# Create a new project directory
-$ mkdir adb 
+# Create a new project directory in your home directory
+$ mkdir ~/adb 
 
-# Set the working directory
-$ cd adb
+# Set the working directory to the new directory
+$ cd ~/adb
 
 # Copy the included playbook
 $ cp $ANSIBLE_ROLES_PATH/chouseknecht.adb-up/files/adb-up.yml . 
@@ -57,9 +65,95 @@ $ cp $ANSIBLE_ROLES_PATH/chouseknecht.adb-up/files/adb-up.yml .
 $ ansible-playbook adb-up.yml --ask-sudo-pass
 ```
 
+## Deploying your Ansible Container project 
+
+After the role executes, you will have a new VM running OpenShift and a Docker daemon. If you have an Ansible Container project, you can easily test the deployment of your app to OpenShift.
+
+Start by first sourcing the script, *setenv.sh*, which was generated by the role. It will set DOCKER* environment variables in your shell to point the Docker daemon running in the VM. You'll then build your project images using the Docker daemon found on the VM, generate your deployment playbook and role, and run the role. 
+
+In the following example we'll create a new project, install the Container Enabled role [jenkins-container](https://galaxy.ansible.com/awasilyev/jenkins-container/), and deploy the Jenkins service to our local OpenShift cluster.
+
+**NOTE**: to run this example, you will need to install Ansible Container 0.3. See [Installing from Source](http://docs.ansible.com/ansible-container/installation.html#running-from-source), if you need assistance.
+
+```
+# Source setenv.sh
+$ source ./setenv.sh 
+
+# Create a new project folder
+$ mkdir jenkins 
+
+# Set the working directory 
+$ cd jenkins 
+
+# Init the project 
+$ ansible-container init 
+
+# Install the jenkins-container role 
+$ ansible-container install awasilyev.jenkins-container
+
+# Build the images on the ADB virtual machine
+$ ansible-container --no-selinux build 
+
+# Generate the deployment playbook and role 
+$ ansible-container --no-selinux shipit openshift --local-images
+
+# Set the working directory to ansible
+$ cd ansible
+
+# Run the shipit playbook
+$ ansible-playbook shipit-openshift.yml
+```
+A couple notes:
+
+- The *--no-selinux* option is new in v0.3.0. It stops the additon of the 'Z' option to volumes automatically attached to the build container. In this case, we need itto not include it on the project directory, which gets mounted as /ansible-container. 
+
+- The *--local-images* option used with `shipit` is new in v0.3.0 as well. It forces the use of images local to the Docker daemon, rather than pulling them from the engine's default source, which in this case would be Docker Hub. 
+
 ## Role Variables
+adb_server_certpath: /etc/docker
+> Where to place generated service certificates on the VM.
 
+adb_client_certpath: ./.vagrant/machines/default/virtualbox/docker
+> Where to place generated client certificates on the host.
 
+adb_hostname: openshift.adb
+> The name to give add to the host's */etc/hosts* file and associate witht th VM.
+
+adb_passphrase: opensesame
+> Password used when generating the certifiates.
+
+adb_country: US
+> Country to use for certificate signing requests.
+
+adb_state: North Carolina
+> State to use for certificate signing requests.
+
+adb_locality: Durham
+> Locality to use for certificate signing requests.
+
+adb_organization: Acme Corp
+> Organization name to use for certificate signing requests.
+
+adb_restart_docker: yes
+> Restart the Docker daemon after generating new certificates. 
+
+adb_force_create: yes
+> Destroy any pre-existing VM found in the project directory. 
+
+adb_openshift_version: v1.3.2
+> Version of OpenShift to install on the VM. 
+
+adb_github_url: https://api.github.com/repos
+> Where to get the OpenShift client from.
+
+openshift_repo: openshift/origin
+> Where to get the OpenShift client from.
+
+openshift_client_dest: /usr/local/bin
+> Where to install the OpenShift client. If you change this, be sure to specify a directory that's included in your PATH environment variable.
+
+openshift_force_client_install: yes
+> Overwrite any existing `oc` binary found in the *openshift_client_dest* path.
 
 ## Known issues
 
