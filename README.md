@@ -76,8 +76,8 @@ In the following example we'll create a new project, install the Container Enabl
 **NOTE**: to run this example, you will need to install Ansible Container 0.3. See [Installing from Source](http://docs.ansible.com/ansible-container/installation.html#running-from-source), if you need assistance.
 
 ```
-# Source setenv.sh
-$ source ./setenv.sh 
+# Set the DOCKER* variables 
+$ source setenv.sh 
 
 # Create a new project folder
 $ mkdir jenkins 
