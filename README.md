@@ -64,7 +64,7 @@ $ cp $ANSIBLE_ROLES_PATH/chouseknecht.adb-up/files/adb-up.yml .
 # Run the playbook
 $ ansible-playbook adb-up.yml --ask-sudo-pass
 ```
-Click the following image to watch a video of the role being executed:
+Click the following image to watch a video showing how to run the role:
 
 [![Running the role](https://github.com/chouseknecht/adb-up-role/blob/images/images/adb_up_role.png)](https://youtu.be/8HFKxZSP5A8)
 
