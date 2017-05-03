@@ -1,5 +1,14 @@
 # create_adb.yml
 
+- name: Install vagrant plugins
+  command: vagrant plugin install vagrant-service-manager vagrant-sshfs landrush
+
+- name: Download the OpenShift Vagrant file
+  get_url:
+    url: https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile
+    dest: "{{ playbook_dir }}/Vagrantfile"
+    force: yes
+
 - name: Check for existing VM
   include: isrunning.yml
 
@@ -11,15 +20,6 @@
   assert:
     msg: A VM already exists. Remove it or set adb_force_create.
     that: not vm_exists or adb_force_create
-
-- name: Install vagrant plugins
-  command: vagrant plugin install vagrant-service-manager vagrant-sshfs landrush
-
-- name: Download the OpenShift Vagrant file
-  get_url:
-    url: https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile
-    dest: "{{ playbook_dir }}/Vagrantfile"
-    force: yes
 
 - name: Update the OpenShift version
   lineinfile:
