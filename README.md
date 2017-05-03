@@ -59,7 +59,7 @@ $ mkdir ~/adb
 $ cd ~/adb
 
 # Copy the included playbook
-$ cp $ANSIBLE_ROLES_PATH/chouseknecht.adb-up/files/adb-up.yml . 
+$ cp $ANSIBLE_ROLES_PATH/chouseknecht.adb-up-role/files/adb-up.yml . 
 
 # Run the playbook
 $ ansible-playbook adb-up.yml --ask-sudo-pass
