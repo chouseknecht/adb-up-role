@@ -12,4 +12,3 @@
   set_fact:
     vm_exists: true
   when: "'running' in statusout.stdout or 'power off' in statusout.stdout"
-
